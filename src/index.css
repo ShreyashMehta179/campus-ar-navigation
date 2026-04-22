@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Hackoutsav AR — futuristic neon dark */
+    --background: 230 35% 6%;
+    --foreground: 190 40% 96%;
+
+    --card: 230 30% 10%;
+    --card-foreground: 190 40% 96%;
+
+    --popover: 230 35% 8%;
+    --popover-foreground: 190 40% 96%;
+
+    --primary: 175 95% 55%;            /* neon cyan */
+    --primary-foreground: 230 40% 6%;
+    --primary-glow: 175 100% 65%;
+
+    --secondary: 280 90% 65%;          /* electric violet */
+    --secondary-foreground: 230 40% 6%;
+
+    --muted: 230 25% 14%;
+    --muted-foreground: 215 20% 70%;
+
+    --accent: 320 95% 60%;             /* magenta */
+    --accent-foreground: 230 40% 6%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 230 30% 18%;
+    --input: 230 30% 14%;
+    --ring: 175 95% 55%;
+
+    --radius: 1rem;
+
+    --gradient-hero: linear-gradient(135deg, hsl(175 95% 55% / 0.25), hsl(280 90% 65% / 0.25));
+    --gradient-neon: linear-gradient(135deg, hsl(175 95% 55%), hsl(280 90% 65%));
+    --gradient-bg: radial-gradient(ellipse at top, hsl(230 35% 12%), hsl(230 35% 5%));
+    --shadow-neon: 0 0 30px hsl(175 95% 55% / 0.45), 0 0 60px hsl(280 90% 65% / 0.25);
+    --shadow-glass: 0 8px 32px hsl(230 50% 2% / 0.6);
+    --glass-bg: hsl(230 30% 12% / 0.55);
+    --glass-border: hsl(190 40% 96% / 0.08);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background: var(--gradient-bg);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+  }
+  html, body, #root { @apply min-h-screen; }
+}
+
+@layer components {
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-glass);
+  }
+  .glass-strong {
+    background: hsl(230 30% 10% / 0.75);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+  }
+  .neon-text {
+    background: var(--gradient-neon);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .neon-border { box-shadow: var(--shadow-neon); }
+  .grid-bg {
+    background-image:
+      linear-gradient(hsl(175 95% 55% / 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(175 95% 55% / 0.07) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+}
+
+@layer utilities {
+  .safe-bottom { padding-bottom: calc(env(safe-area-inset-bottom) + 5rem); }
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+@keyframes float-y {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-pulse-ring { animation: pulse-ring 1.8s ease-out infinite; }
+.animate-float-y { animation: float-y 2.4s ease-in-out infinite; }
+
+
