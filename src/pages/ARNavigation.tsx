@@ -1,8 +1,8 @@
 // src/pages/ARNavigation.tsx
-// FULLY CORRECTED VERSION
-// Fixed image overlap issue
-// Bigger image card moved below header
-// Added Voice Navigation without changing design
+// FULL CORRECTED VERSION
+// Smaller UI so camera view is visible properly
+// Voice navigation included
+// No design changes except compact sizing
 
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -24,19 +24,15 @@ import ARScene from "@/components/ar/ARScene";
 const dirIcon = (d: string) => {
   switch (d) {
     case "left":
-      return <CornerUpLeft className="h-7 w-7" />;
-
+      return <CornerUpLeft className="h-5 w-5" />;
     case "right":
-      return <CornerUpRight className="h-7 w-7" />;
-
+      return <CornerUpRight className="h-5 w-5" />;
     case "down":
-      return <ArrowDown className="h-7 w-7" />;
-
+      return <ArrowDown className="h-5 w-5" />;
     case "arrive":
-      return <MapPin className="h-7 w-7" />;
-
+      return <MapPin className="h-5 w-5" />;
     default:
-      return <ArrowUp className="h-7 w-7" />;
+      return <ArrowUp className="h-5 w-5" />;
   }
 };
 
@@ -45,17 +41,13 @@ const ARNavigation = () => {
   const navigate = useNavigate();
 
   const dest = getDestination(id ?? "");
-  const [stepIndex, setStepIndex] =
-    useState(0);
+  const [stepIndex, setStepIndex] = useState(0);
 
   useEffect(() => {
     if (!dest) {
-      navigate(
-        "/select-destination",
-        {
-          replace: true,
-        }
-      );
+      navigate("/select-destination", {
+        replace: true,
+      });
     }
   }, [dest, navigate]);
 
@@ -63,60 +55,36 @@ const ARNavigation = () => {
   useEffect(() => {
     if (!dest) return;
 
-    const step =
-      dest.route[stepIndex];
+    const step = dest.route[stepIndex];
 
-    const speak = (
-      text: string
-    ) => {
+    const speak = (text: string) => {
       window.speechSynthesis.cancel();
 
       const msg =
-        new SpeechSynthesisUtterance(
-          text
-        );
+        new SpeechSynthesisUtterance(text);
 
       msg.lang = "en-IN";
       msg.rate = 1;
       msg.pitch = 1;
       msg.volume = 1;
 
-      window.speechSynthesis.speak(
-        msg
-      );
+      window.speechSynthesis.speak(msg);
     };
 
-    if (
-      step.direction ===
-      "left"
-    ) {
-      speak(
-        "Turn left side"
-      );
+    if (step.direction === "left") {
+      speak("Turn left side");
     } else if (
-      step.direction ===
-      "right"
+      step.direction === "right"
     ) {
-      speak(
-        "Turn right side"
-      );
+      speak("Turn right side");
+    } else if (step.direction === "up") {
+      speak("Walk straight");
     } else if (
-      step.direction ===
-      "up"
+      step.direction === "down"
     ) {
-      speak(
-        "Walk straight"
-      );
+      speak("Go back");
     } else if (
-      step.direction ===
-      "down"
-    ) {
-      speak(
-        "Go back"
-      );
-    } else if (
-      step.direction ===
-      "arrive"
+      step.direction === "arrive"
     ) {
       speak(
         `You are now at ${dest.name}`
@@ -126,12 +94,10 @@ const ARNavigation = () => {
 
   if (!dest) return null;
 
-  const step =
-    dest.route[stepIndex];
+  const step = dest.route[stepIndex];
 
   const isArrival =
-    step.direction ===
-    "arrive";
+    step.direction === "arrive";
 
   const totalSteps =
     dest.route.length;
@@ -170,23 +136,23 @@ const ARNavigation = () => {
       </div>
 
       {/* HEADER */}
-      <div className="absolute inset-x-0 top-0 z-30 p-4">
-        <div className="glass-strong flex items-center gap-3 rounded-3xl p-4 shadow-neon">
+      <div className="absolute inset-x-0 top-0 z-30 p-3">
+        <div className="glass-strong flex items-center gap-3 rounded-2xl p-3 shadow-neon">
           <button
             onClick={() =>
               navigate(-1)
             }
-            className="flex h-12 w-12 items-center justify-center rounded-2xl bg-background/40"
+            className="flex h-10 w-10 items-center justify-center rounded-2xl bg-background/40"
           >
-            <ArrowLeft className="h-6 w-6" />
+            <ArrowLeft className="h-5 w-5" />
           </button>
 
           <div className="flex-1 min-w-0">
-            <p className="text-[11px] uppercase tracking-[0.3em] text-primary">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-primary">
               Navigating To
             </p>
 
-            <p className="truncate text-2xl font-black">
+            <p className="truncate text-xl font-black">
               {dest.name}
             </p>
           </div>
@@ -195,14 +161,14 @@ const ARNavigation = () => {
             onClick={() =>
               navigate("/")
             }
-            className="flex h-12 w-12 items-center justify-center rounded-2xl bg-background/40"
+            className="flex h-10 w-10 items-center justify-center rounded-2xl bg-background/40"
           >
-            <X className="h-6 w-6" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* PROGRESS BAR */}
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-background/40">
+        {/* PROGRESS */}
+        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-background/40">
           <motion.div
             className="h-full bg-gradient-neon"
             animate={{
@@ -211,32 +177,31 @@ const ARNavigation = () => {
           />
         </div>
 
-        {/* STEP TEXT */}
-        <p className="mt-2 text-center text-xs text-white/70">
+        <p className="mt-1 text-center text-[11px] text-white/70">
           Step {stepIndex + 1} of{" "}
           {totalSteps}
         </p>
       </div>
 
-      {/* BIG DESTINATION IMAGE */}
-      <div className="absolute left-4 top-40 z-30">
-        <div className="glass-strong w-56 rounded-3xl p-3 shadow-neon">
+      {/* SMALL DESTINATION IMAGE */}
+      <div className="absolute left-3 top-28 z-30">
+        <div className="glass-strong w-40 rounded-2xl p-2 shadow-neon">
           <img
             src={dest.image}
             alt={dest.name}
-            className="h-40 w-full rounded-2xl object-cover"
+            className="h-24 w-full rounded-xl object-cover"
           />
 
-          <div className="mt-3">
-            <p className="text-lg font-black text-white">
+          <div className="mt-2">
+            <p className="text-sm font-black text-white">
               {dest.name}
             </p>
 
-            <p className="mt-1 text-xs text-white/70">
+            <p className="mt-1 text-[11px] text-white/70">
               {dest.floor}
             </p>
 
-            <p className="mt-1 text-sm font-bold text-cyan-400">
+            <p className="mt-1 text-xs font-bold text-cyan-400">
               ETA: {dest.eta}
             </p>
           </div>
@@ -245,17 +210,14 @@ const ARNavigation = () => {
 
       {/* DISTANCE */}
       {!isArrival &&
-        step.distance >
-          0 && (
-          <div className="absolute right-4 top-40 z-30">
-            <div className="glass-strong rounded-3xl px-5 py-3 text-center shadow-neon">
-              <p className="text-4xl font-black text-cyan-400">
-                {
-                  step.distance
-                }
+        step.distance > 0 && (
+          <div className="absolute right-3 top-28 z-30">
+            <div className="glass-strong rounded-2xl px-4 py-2 text-center shadow-neon">
+              <p className="text-2xl font-black text-cyan-400">
+                {step.distance}
               </p>
 
-              <p className="text-[10px] uppercase tracking-[0.25em] text-white/70">
+              <p className="text-[9px] uppercase text-white/70">
                 meters
               </p>
             </div>
@@ -263,7 +225,7 @@ const ARNavigation = () => {
         )}
 
       {/* BOTTOM CARD */}
-      <div className="absolute inset-x-0 bottom-0 z-30 p-4">
+      <div className="absolute inset-x-0 bottom-0 z-30 p-3">
         <AnimatePresence mode="wait">
           <motion.div
             key={stepIndex}
@@ -279,23 +241,23 @@ const ARNavigation = () => {
               opacity: 0,
               y: -20,
             }}
-            className="glass-strong rounded-[28px] p-5 shadow-neon"
+            className="glass-strong rounded-2xl p-3 shadow-neon"
           >
-            <div className="flex items-center gap-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-neon shadow-neon">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-neon shadow-neon">
                 {dirIcon(
                   step.direction
                 )}
               </div>
 
               <div className="flex-1">
-                <p className="text-[11px] uppercase tracking-[0.3em] text-primary">
+                <p className="text-[10px] uppercase tracking-[0.3em] text-primary">
                   {isArrival
                     ? "Destination"
                     : "Next Move"}
                 </p>
 
-                <p className="text-xl font-bold leading-tight">
+                <p className="text-base font-bold leading-tight">
                   {
                     step.instruction
                   }
@@ -305,7 +267,7 @@ const ARNavigation = () => {
 
             <button
               onClick={next}
-              className="mt-5 w-full rounded-3xl bg-gradient-neon py-4 text-xl font-black text-primary-foreground shadow-neon active:scale-[0.98]"
+              className="mt-3 w-full rounded-2xl bg-gradient-neon py-3 text-lg font-black text-primary-foreground shadow-neon"
             >
               {isArrival
                 ? "I'm Here →"
