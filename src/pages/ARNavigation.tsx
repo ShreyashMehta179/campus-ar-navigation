@@ -1,11 +1,5 @@
-// src/pages/ARNavigation.tsx
-// FULL CORRECTED VERSION
-// Smaller UI so camera view is visible properly
-// Voice navigation included
-// No design changes except compact sizing
-
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
@@ -15,6 +9,7 @@ import {
   CornerUpRight,
   MapPin,
   X,
+  Volume2,
 } from "lucide-react";
 
 import { getDestination } from "@/data/destinations";
@@ -24,15 +19,15 @@ import ARScene from "@/components/ar/ARScene";
 const dirIcon = (d: string) => {
   switch (d) {
     case "left":
-      return <CornerUpLeft className="h-5 w-5" />;
+      return <CornerUpLeft className="h-6 w-6" />;
     case "right":
-      return <CornerUpRight className="h-5 w-5" />;
+      return <CornerUpRight className="h-6 w-6" />;
     case "down":
-      return <ArrowDown className="h-5 w-5" />;
+      return <ArrowDown className="h-6 w-6" />;
     case "arrive":
-      return <MapPin className="h-5 w-5" />;
+      return <MapPin className="h-6 w-6" />;
     default:
-      return <ArrowUp className="h-5 w-5" />;
+      return <ArrowUp className="h-6 w-6" />;
   }
 };
 
@@ -40,238 +35,203 @@ const ARNavigation = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const dest = getDestination(id ?? "");
+  const destination = getDestination(id ?? "");
+
   const [stepIndex, setStepIndex] = useState(0);
+  const [voiceOn, setVoiceOn] = useState(true);
 
   useEffect(() => {
-    if (!dest) {
-      navigate("/select-destination", {
-        replace: true,
-      });
+    if (!destination) {
+      navigate("/select-destination", { replace: true });
     }
-  }, [dest, navigate]);
+  }, [destination, navigate]);
 
-  /* VOICE NAVIGATION */
+  const step = destination?.route[stepIndex];
+
+  const totalDistance = useMemo(() => {
+    if (!destination) return 0;
+    return destination.route.reduce(
+      (sum, item) => sum + item.distance,
+      0
+    );
+  }, [destination]);
+
+  const walkedDistance = useMemo(() => {
+    if (!destination) return 0;
+    return destination.route
+      .slice(0, stepIndex)
+      .reduce((sum, item) => sum + item.distance, 0);
+  }, [destination, stepIndex]);
+
+  const remainingDistance = Math.max(
+    totalDistance - walkedDistance,
+    0
+  );
+
   useEffect(() => {
-    if (!dest) return;
+    if (!voiceOn || !step || !destination) return;
 
-    const step = dest.route[stepIndex];
+    window.speechSynthesis.cancel();
 
-    const speak = (text: string) => {
-      window.speechSynthesis.cancel();
+    const msg = new SpeechSynthesisUtterance(
+      step.instruction
+    );
+    msg.lang = "en-IN";
+    msg.rate = 1;
+    msg.pitch = 1;
+    msg.volume = 1;
 
-      const msg =
-        new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(msg);
+  }, [stepIndex, voiceOn, step, destination]);
 
-      msg.lang = "en-IN";
-      msg.rate = 1;
-      msg.pitch = 1;
-      msg.volume = 1;
+  if (!destination || !step) return null;
 
-      window.speechSynthesis.speak(msg);
-    };
-
-    if (step.direction === "left") {
-      speak("Turn left side");
-    } else if (
-      step.direction === "right"
-    ) {
-      speak("Turn right side");
-    } else if (step.direction === "up") {
-      speak("Walk straight");
-    } else if (
-      step.direction === "down"
-    ) {
-      speak("Go back");
-    } else if (
-      step.direction === "arrive"
-    ) {
-      speak(
-        `You are now at ${dest.name}`
-      );
-    }
-  }, [stepIndex, dest]);
-
-  if (!dest) return null;
-
-  const step = dest.route[stepIndex];
-
-  const isArrival =
-    step.direction === "arrive";
-
-  const totalSteps =
-    dest.route.length;
+  const isArrival = step.direction === "arrive";
 
   const progress =
-    ((stepIndex + 1) /
-      totalSteps) *
-    100;
+    ((stepIndex + 1) / destination.route.length) * 100;
 
-  const next = () => {
-    if (
-      stepIndex <
-      totalSteps - 1
-    ) {
-      setStepIndex(
-        (i) => i + 1
-      );
+  const nextStep = () => {
+    if (stepIndex < destination.route.length - 1) {
+      setStepIndex((prev) => prev + 1);
     } else {
-      navigate(
-        `/success/${dest.id}`
-      );
+      navigate(`/success/${destination.id}`);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-black">
+    <div className="fixed inset-0 bg-black overflow-hidden">
       {/* CAMERA */}
       <CameraView />
 
-      {/* AR ARROWS */}
-      <div className="absolute inset-0">
+      {/* AR OVERLAY */}
+      <div className="absolute inset-0 z-10">
         <ARScene
-          steps={dest.route}
+          steps={destination.route}
           stepIndex={stepIndex}
         />
       </div>
 
-      {/* HEADER */}
+      {/* TOP BAR */}
       <div className="absolute inset-x-0 top-0 z-30 p-3">
-        <div className="glass-strong flex items-center gap-3 rounded-2xl p-3 shadow-neon">
+        <div className="glass-strong rounded-2xl p-3 flex items-center gap-3 shadow-neon">
           <button
-            onClick={() =>
-              navigate(-1)
-            }
-            className="flex h-10 w-10 items-center justify-center rounded-2xl bg-background/40"
+            onClick={() => navigate(-1)}
+            className="h-11 w-11 rounded-xl bg-background/40 flex items-center justify-center"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
 
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-primary">
+            <p className="text-[10px] uppercase tracking-[0.25em] text-primary">
               Navigating To
             </p>
 
-            <p className="truncate text-xl font-black">
-              {dest.name}
+            <p className="truncate text-xl font-black text-white">
+              {destination.name}
             </p>
           </div>
 
           <button
-            onClick={() =>
-              navigate("/")
-            }
-            className="flex h-10 w-10 items-center justify-center rounded-2xl bg-background/40"
+            onClick={() => setVoiceOn(!voiceOn)}
+            className="h-11 w-11 rounded-xl bg-background/40 flex items-center justify-center"
+          >
+            <Volume2
+              className={`h-5 w-5 ${
+                voiceOn ? "text-cyan-400" : "text-white/40"
+              }`}
+            />
+          </button>
+
+          <button
+            onClick={() => navigate("/")}
+            className="h-11 w-11 rounded-xl bg-background/40 flex items-center justify-center"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* PROGRESS */}
-        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-background/40">
+        {/* Progress */}
+        <div className="mt-2 h-2 rounded-full bg-white/10 overflow-hidden">
           <motion.div
             className="h-full bg-gradient-neon"
-            animate={{
-              width: `${progress}%`,
-            }}
+            animate={{ width: `${progress}%` }}
           />
         </div>
-
-        <p className="mt-1 text-center text-[11px] text-white/70">
-          Step {stepIndex + 1} of{" "}
-          {totalSteps}
-        </p>
       </div>
 
-      {/* SMALL DESTINATION IMAGE */}
+      {/* DESTINATION CARD */}
       <div className="absolute left-3 top-28 z-30">
-        <div className="glass-strong w-40 rounded-2xl p-2 shadow-neon">
+        <div className="glass-strong w-44 rounded-2xl p-2 shadow-neon">
           <img
-            src={dest.image}
-            alt={dest.name}
-            className="h-24 w-full rounded-xl object-cover"
+            src={step.image || destination.image}
+            alt={destination.name}
+            className="h-28 w-full rounded-xl object-cover"
           />
 
           <div className="mt-2">
-            <p className="text-sm font-black text-white">
-              {dest.name}
+            <p className="font-black text-white text-sm">
+              {destination.name}
             </p>
-
-            <p className="mt-1 text-[11px] text-white/70">
-              {dest.floor}
+            <p className="text-[11px] text-white/70">
+              {destination.floor}
             </p>
-
-            <p className="mt-1 text-xs font-bold text-cyan-400">
-              ETA: {dest.eta}
+            <p className="text-xs font-bold text-cyan-400 mt-1">
+              ETA: {destination.eta}
             </p>
           </div>
         </div>
       </div>
 
-      {/* DISTANCE */}
-      {!isArrival &&
-        step.distance > 0 && (
-          <div className="absolute right-3 top-28 z-30">
-            <div className="glass-strong rounded-2xl px-4 py-2 text-center shadow-neon">
-              <p className="text-2xl font-black text-cyan-400">
-                {step.distance}
-              </p>
+      {/* DISTANCE CARD */}
+      <div className="absolute right-3 top-28 z-30">
+        <div className="glass-strong rounded-2xl px-4 py-3 text-center shadow-neon min-w-[92px]">
+          <p className="text-2xl font-black text-cyan-400">
+            {remainingDistance.toFixed(1)}
+          </p>
+          <p className="text-[10px] uppercase text-white/60">
+            meters left
+          </p>
+        </div>
+      </div>
 
-              <p className="text-[9px] uppercase text-white/70">
-                meters
-              </p>
-            </div>
-          </div>
-        )}
-
-      {/* BOTTOM CARD */}
+      {/* BOTTOM NAVIGATION */}
       <div className="absolute inset-x-0 bottom-0 z-30 p-3">
         <AnimatePresence mode="wait">
           <motion.div
             key={stepIndex}
-            initial={{
-              opacity: 0,
-              y: 30,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            exit={{
-              opacity: 0,
-              y: -20,
-            }}
-            className="glass-strong rounded-2xl p-3 shadow-neon"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="glass-strong rounded-3xl p-4 shadow-neon"
           >
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-neon shadow-neon">
-                {dirIcon(
-                  step.direction
-                )}
+              <div className="h-14 w-14 rounded-2xl bg-gradient-neon flex items-center justify-center shadow-neon">
+                {dirIcon(step.direction)}
               </div>
 
               <div className="flex-1">
                 <p className="text-[10px] uppercase tracking-[0.3em] text-primary">
-                  {isArrival
-                    ? "Destination"
-                    : "Next Move"}
+                  {isArrival ? "Destination" : "Next Step"}
                 </p>
 
-                <p className="text-base font-bold leading-tight">
-                  {
-                    step.instruction
-                  }
+                <p className="text-base font-bold text-white leading-tight">
+                  {step.instruction}
                 </p>
+
+                {!isArrival && (
+                  <p className="text-sm text-white/70 mt-1">
+                    {step.distance} m
+                  </p>
+                )}
               </div>
             </div>
 
             <button
-              onClick={next}
-              className="mt-3 w-full rounded-2xl bg-gradient-neon py-3 text-lg font-black text-primary-foreground shadow-neon"
+              onClick={nextStep}
+              className="mt-4 w-full rounded-2xl bg-gradient-neon py-3 text-lg font-black text-primary-foreground shadow-neon"
             >
-              {isArrival
-                ? "I'm Here →"
-                : "Next Step →"}
+              {isArrival ? "I'm Here →" : "Next Step →"}
             </button>
           </motion.div>
         </AnimatePresence>

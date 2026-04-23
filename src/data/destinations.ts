@@ -1,18 +1,21 @@
 // src/data/destinations.ts
-// FULL CORRECTED VERSION
-// Added ENTRY GATE of college
-// Add image: /public/images/entrygate.jpg
+// UPDATED ROUTES WITH MULTI-STEP DIRECTIONS
+// GOOGLE MAP STYLE STEP BY STEP
+// ALL DISTANCES IN METERS
+// ALL IMAGES .jpeg
+
+export type Direction =
+  | "up"
+  | "left"
+  | "right"
+  | "down"
+  | "arrive";
 
 export type RouteStep = {
   instruction: string;
-  direction:
-    | "up"
-    | "left"
-    | "right"
-    | "down"
-    | "arrive";
+  direction: Direction;
   distance: number;
-  landmark?: string;
+  image?: string;
 };
 
 export type Destination = {
@@ -20,9 +23,9 @@ export type Destination = {
   name: string;
   category:
     | "Lab"
-    | "Classroom"
     | "Facility"
-    | "Event";
+    | "Event"
+    | "Room";
   icon: string;
   floor: string;
   eta: string;
@@ -32,216 +35,6 @@ export type Destination = {
 };
 
 export const destinations: Destination[] = [
-  /* ENTRY GATE */
-  {
-    id: "entry-gate",
-    name: "Entry Gate",
-    category: "Facility",
-    icon: "🏫",
-    floor: "Ground Floor",
-    eta: "0 min",
-    description:
-      "Main Entrance of DYPSEM College",
-    image:
-      "/images/entrygate.jpg",
-    route: [
-      {
-        instruction:
-          "You are at Entry Gate",
-        direction:
-          "arrive",
-        distance: 0,
-      },
-    ],
-  },
-
-  /* LAB 101 */
-  {
-    id: "lab-101",
-    name: "Lab 101",
-    category: "Lab",
-    icon: "💻",
-    floor: "Ground Floor",
-    eta: "2 min",
-    description:
-      "Computer Coding Round Venue",
-    image:
-      "/images/lab101.jpg",
-    route: [
-      {
-        instruction:
-          "Walk straight from Entry Gate",
-        direction: "up",
-        distance: 15,
-      },
-      {
-        instruction:
-          "Turn right at Corridor A",
-        direction:
-          "right",
-        distance: 8,
-      },
-      {
-        instruction:
-          "Continue straight",
-        direction: "up",
-        distance: 6,
-      },
-      {
-        instruction:
-          "Reached Lab 101",
-        direction:
-          "arrive",
-        distance: 0,
-      },
-    ],
-  },
-
-  /* REGISTRATION */
-  {
-    id: "registration",
-    name: "Registration Desk",
-    category: "Facility",
-    icon: "📝",
-    floor: "Ground Floor",
-    eta: "1 min",
-    description:
-      "Check-in & Welcome Kit",
-    image:
-      "/images/registration.jpg",
-    route: [
-      {
-        instruction:
-          "Walk straight from Entry Gate",
-        direction: "up",
-        distance: 8,
-      },
-      {
-        instruction:
-          "Desk on left side",
-        direction:
-          "left",
-        distance: 2,
-      },
-      {
-        instruction:
-          "Reached Registration",
-        direction:
-          "arrive",
-        distance: 0,
-      },
-    ],
-  },
-
-  /* FOOD ZONE */
-  {
-    id: "food-zone",
-    name: "Food Zone",
-    category: "Facility",
-    icon: "🍽️",
-    floor: "Ground Floor",
-    eta: "3 min",
-    description:
-      "Snacks & Lunch Area",
-    image:
-      "/images/foodzone.jpg",
-    route: [
-      {
-        instruction:
-          "Turn right from Entry Gate",
-        direction:
-          "right",
-        distance: 10,
-      },
-      {
-        instruction:
-          "Walk straight",
-        direction: "up",
-        distance: 15,
-      },
-      {
-        instruction:
-          "Reached Food Zone",
-        direction:
-          "arrive",
-        distance: 0,
-      },
-    ],
-  },
-
-  /* AUDITORIUM */
-  {
-    id: "auditorium",
-    name: "Auditorium",
-    category: "Event",
-    icon: "🎤",
-    floor: "Ground Floor",
-    eta: "4 min",
-    description:
-      "Opening Ceremony Hall",
-    image:
-      "/images/auditorium.jpg",
-    route: [
-      {
-        instruction:
-          "Walk straight from Entry Gate",
-        direction: "up",
-        distance: 20,
-      },
-      {
-        instruction:
-          "Turn left",
-        direction:
-          "left",
-        distance: 10,
-      },
-      {
-        instruction:
-          "Reached Auditorium",
-        direction:
-          "arrive",
-        distance: 0,
-      },
-    ],
-  },
-
-  /* TOILET */
-  {
-    id: "toilet",
-    name: "Toilet",
-    category: "Facility",
-    icon: "🚻",
-    floor: "Ground Floor",
-    eta: "2 min",
-    description:
-      "Restroom Area",
-    image:
-      "/images/toilet.jpg",
-    route: [
-      {
-        instruction:
-          "Walk straight",
-        direction: "up",
-        distance: 10,
-      },
-      {
-        instruction:
-          "Turn left",
-        direction:
-          "left",
-        distance: 5,
-      },
-      {
-        instruction:
-          "Reached Toilet",
-        direction:
-          "arrive",
-        distance: 0,
-      },
-    ],
-  },
-
-  /* HELP DESK */
   {
     id: "help-desk",
     name: "Help Desk",
@@ -249,16 +42,16 @@ export const destinations: Destination[] = [
     icon: "🛟",
     floor: "Ground Floor",
     eta: "1 min",
-    description:
-      "Volunteer Support",
-    image:
-      "/images/helpdesk.jpg",
+    description: "Support Desk",
+    image: "/images/helpdesk.jpeg",
     route: [
       {
         instruction:
-          "Near Entry Gate",
+          "Walk straight from Entry Gate",
         direction: "up",
-        distance: 4,
+        distance: 33.7,
+        image:
+          "/images/path-gate-helpdesk.jpeg",
       },
       {
         instruction:
@@ -266,42 +59,214 @@ export const destinations: Destination[] = [
         direction:
           "arrive",
         distance: 0,
+        image:
+          "/images/helpdesk.jpeg",
       },
     ],
   },
 
-  /* EXIT GATE */
   {
-    id: "exit-gate",
-    name: "Exit Gate",
-    category: "Facility",
-    icon: "🚪",
+    id: "lab-004",
+    name: "Hackathon Lab",
+    category: "Lab",
+    icon: "💻",
     floor: "Ground Floor",
     eta: "2 min",
     description:
-      "College Exit",
+      "Hackathon Main Venue",
     image:
-      "/images/gate.jpg",
+      "/images/lab004.jpeg",
     route: [
+      {
+        instruction:
+          "Walk straight from Entry Gate to Help Desk",
+        direction: "up",
+        distance: 33.7,
+        image:
+          "/images/path-gate-helpdesk.jpeg",
+      },
+      {
+        instruction:
+          "After corridor turn left",
+        direction:
+          "left",
+        distance: 6,
+        image:
+          "/images/corridor.jpeg",
+      },
+      {
+        instruction:
+          "Reached Hackathon Lab",
+        direction:
+          "arrive",
+        distance: 0,
+        image:
+          "/images/lab004.jpeg",
+      },
+    ],
+  },
+
+  {
+    id: "washroom",
+    name: "Washroom",
+    category: "Facility",
+    icon: "🚻",
+    floor: "Ground Floor",
+    eta: "2 min",
+    description:
+      "Washroom beside labs",
+    image:
+      "/images/washroom.jpeg",
+    route: [
+      {
+        instruction:
+          "Walk straight from Entry Gate to Help Desk",
+        direction: "up",
+        distance: 33.7,
+        image:
+          "/images/path-gate-helpdesk.jpeg",
+      },
+      {
+        instruction:
+          "After corridor turn left toward lab side",
+        direction:
+          "left",
+        distance: 6,
+        image:
+          "/images/corridor.jpeg",
+      },
+      {
+        instruction:
+          "Walk straight from lab side",
+        direction: "up",
+        distance: 8,
+        image:
+          "/images/corridor.jpeg",
+      },
+      {
+        instruction:
+          "Washroom is on your right side",
+        direction:
+          "right",
+        distance: 2,
+        image:
+          "/images/washroom.jpeg",
+      },
+      {
+        instruction:
+          "Reached Washroom",
+        direction:
+          "arrive",
+        distance: 0,
+        image:
+          "/images/washroom.jpeg",
+      },
+    ],
+  },
+
+  {
+    id: "girls-common-room",
+    name: "Girls Common Room",
+    category: "Room",
+    icon: "🚺",
+    floor: "Ground Floor",
+    eta: "3 min",
+    description:
+      "Girls Rest Area",
+    image:
+      "/images/girlsroom.jpeg",
+    route: [
+      {
+        instruction:
+          "Walk straight from Entry Gate to Help Desk",
+        direction: "up",
+        distance: 33.7,
+        image:
+          "/images/path-gate-helpdesk.jpeg",
+      },
+      {
+        instruction:
+          "Turn left at corridor toward labs",
+        direction:
+          "left",
+        distance: 6,
+        image:
+          "/images/corridor.jpeg",
+      },
       {
         instruction:
           "Walk straight",
         direction: "up",
         distance: 12,
+        image:
+          "/images/corridor.jpeg",
       },
       {
         instruction:
-          "Turn right",
+          "Girls Common Room is on your left side",
         direction:
-          "right",
-        distance: 6,
+          "left",
+        distance: 2,
+        image:
+          "/images/girlsroom.jpeg",
       },
       {
         instruction:
-          "Exited Campus",
+          "Reached Girls Common Room",
         direction:
           "arrive",
         distance: 0,
+        image:
+          "/images/girlsroom.jpeg",
+      },
+    ],
+  },
+
+  {
+    id: "canteen",
+    name: "Canteen",
+    category: "Facility",
+    icon: "🍽️",
+    floor: "Ground Floor",
+    eta: "4 min",
+    description:
+      "College Canteen",
+    image:
+      "/images/canteen.jpeg",
+    route: [
+      {
+        instruction:
+          "Walk straight from Entry Gate to Help Desk",
+        direction: "up",
+        distance: 33.7,
+        image:
+          "/images/path-gate-helpdesk.jpeg",
+      },
+      {
+        instruction:
+          "Turn left at corridor",
+        direction:
+          "left",
+        distance: 6,
+        image:
+          "/images/corridor.jpeg",
+      },
+      {
+        instruction:
+          "Walk straight passing labs",
+        direction: "up",
+        distance: 60,
+        image:
+          "/images/path-canteen.jpeg",
+      },
+      {
+        instruction:
+          "Reached Canteen",
+        direction:
+          "arrive",
+        distance: 0,
+        image:
+          "/images/canteen.jpeg",
       },
     ],
   },
@@ -311,5 +276,6 @@ export const getDestination = (
   id: string
 ) =>
   destinations.find(
-    (d) => d.id === id
+    (item) =>
+      item.id === id
   );
