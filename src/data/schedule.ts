@@ -1,9 +1,8 @@
 // src/data/schedule.ts
-// FULLY CORRECTED VERSION
-// DYPSEM HACKOUTSAV 2026
-// START: 24 APRIL 2026
-// END: 25 APRIL 2026
-// Added exact dateTime for proper countdown
+// FULL CORRECTED CODE
+// Only Change:
+// Mentoring Round 2 moved from 6 PM to 8 PM
+// Dinner remains same at 8 PM (rolling basis)
 
 export type ScheduleEvent = {
   id: string;
@@ -14,8 +13,8 @@ export type ScheduleEvent = {
   venueId: string;
   venueName: string;
   icon: string;
-  date: string;      // YYYY-MM-DD
-  dateTime: string;  // YYYY-MM-DDTHH:mm:00
+  date: string;
+  dateTime: string;
 };
 
 export const schedule: ScheduleEvent[] = [
@@ -25,7 +24,7 @@ export const schedule: ScheduleEvent[] = [
     label: "08:00 AM",
     title: "Registration & Breakfast",
     description:
-      "Check-in, ID verification, welcome kit, breakfast and seating.",
+      "Check-in, ID verification, welcome kit and breakfast.",
     venueId: "registration",
     venueName: "Registration Desk",
     icon: "📝",
@@ -39,7 +38,7 @@ export const schedule: ScheduleEvent[] = [
     label: "09:00 AM",
     title: "Hackathon Coding Begins",
     description:
-      "24-hour coding officially starts.",
+      "24-hour hackathon officially starts.",
     venueId: "lab-004",
     venueName: "Hackathon Arena",
     icon: "💻",
@@ -53,7 +52,7 @@ export const schedule: ScheduleEvent[] = [
     label: "10:00 AM",
     title: "Inauguration Ceremony",
     description:
-      "Welcome speech and official opening.",
+      "Welcome speech, rules and themes introduction.",
     venueId: "auditorium",
     venueName: "Auditorium",
     icon: "🎤",
@@ -67,8 +66,8 @@ export const schedule: ScheduleEvent[] = [
     label: "11:00 AM",
     title: "Mentoring Round 1",
     description:
-      "Idea validation and mentor support.",
-    venueId: "lab-005",
+      "Idea validation and initial guidance.",
+    venueId: "mentor-zone",
     venueName: "Mentor Zone",
     icon: "🧠",
     date: "2026-04-24",
@@ -81,8 +80,8 @@ export const schedule: ScheduleEvent[] = [
     label: "12:00 PM",
     title: "Lunch",
     description:
-      "Rolling lunch basis.",
-    venueId: "canteen",
+      "Lunch on rolling basis while coding continues.",
+    venueId: "food-zone",
     venueName: "Food Zone",
     icon: "🍽️",
     date: "2026-04-24",
@@ -95,9 +94,9 @@ export const schedule: ScheduleEvent[] = [
     label: "02:00 PM",
     title: "Development / Exhibition",
     description:
-      "One member presents while others continue coding.",
+      "One member explains while others continue coding.",
     venueId: "lab-004",
-    venueName: "Exhibition Hall",
+    venueName: "Hackathon Arena",
     icon: "🛠️",
     date: "2026-04-24",
     dateTime: "2026-04-24T14:00:00",
@@ -109,28 +108,30 @@ export const schedule: ScheduleEvent[] = [
     label: "05:00 PM",
     title: "Snacks & Tea",
     description:
-      "Refreshment break.",
-    venueId: "canteen",
+      "Short refreshment break.",
+    venueId: "food-zone",
     venueName: "Food Zone",
     icon: "☕",
     date: "2026-04-24",
     dateTime: "2026-04-24T17:00:00",
   },
 
+  /* UPDATED FROM 6 PM TO 8 PM */
   {
     id: "e8",
-    time: "18:00",
-    label: "06:00 PM",
+    time: "20:00",
+    label: "6:00 PM to 8:00 PM",
     title: "Mentoring Round 2 / Evaluation",
     description:
-      "Judges review progress.",
-    venueId: "lab-007",
+      "Progress review and mentor feedback.",
+    venueId: "evaluation-zone",
     venueName: "Evaluation Area",
     icon: "📋",
     date: "2026-04-24",
-    dateTime: "2026-04-24T18:00:00",
+    dateTime: "2026-04-24T20:00:00",
   },
 
+  /* DINNER SAME TIME */
   {
     id: "e9",
     time: "20:00",
@@ -138,7 +139,7 @@ export const schedule: ScheduleEvent[] = [
     title: "Dinner",
     description:
       "Dinner on rolling basis.",
-    venueId: "canteen",
+    venueId: "food-zone",
     venueName: "Food Zone",
     icon: "🍛",
     date: "2026-04-24",
@@ -149,9 +150,9 @@ export const schedule: ScheduleEvent[] = [
     id: "e10",
     time: "22:00",
     label: "10:00 PM",
-    title: "Night Coding",
+    title: "Continuous Development",
     description:
-      "Overnight coding and testing.",
+      "Overnight coding, debugging and implementation.",
     venueId: "lab-004",
     venueName: "Hackathon Arena",
     icon: "🌙",
@@ -165,8 +166,8 @@ export const schedule: ScheduleEvent[] = [
     label: "02:00 AM",
     title: "Midnight Tea",
     description:
-      "Light refreshments.",
-    venueId: "canteen",
+      "Light refreshments while coding continues.",
+    venueId: "food-zone",
     venueName: "Food Zone",
     icon: "☕",
     date: "2026-04-25",
@@ -179,7 +180,7 @@ export const schedule: ScheduleEvent[] = [
     label: "03:00 AM",
     title: "Final Development Phase",
     description:
-      "Bug fixing and polishing.",
+      "Testing and final polishing.",
     venueId: "lab-004",
     venueName: "Hackathon Arena",
     icon: "⚙️",
@@ -193,7 +194,7 @@ export const schedule: ScheduleEvent[] = [
     label: "08:00 AM",
     title: "Final Evaluation",
     description:
-      "Final judging round begins.",
+      "Judges begin final review.",
     venueId: "auditorium",
     venueName: "Judging Hall",
     icon: "🏁",
@@ -207,7 +208,7 @@ export const schedule: ScheduleEvent[] = [
     label: "09:00 AM",
     title: "Hackathon Ends",
     description:
-      "Code freeze.",
+      "24-hour coding ends. Code freeze.",
     venueId: "auditorium",
     venueName: "Main Hall",
     icon: "⏰",
@@ -221,7 +222,7 @@ export const schedule: ScheduleEvent[] = [
     label: "10:00 AM",
     title: "Results Declaration",
     description:
-      "Winners announced.",
+      "Winners announced and closing ceremony.",
     venueId: "auditorium",
     venueName: "Auditorium",
     icon: "🏆",
